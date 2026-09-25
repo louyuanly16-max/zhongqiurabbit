@@ -1,0 +1,14 @@
+*
+!.gitignore
+!index.html
+!.nojekyll
+!.github/
+!.github/workflows/
+!.github/workflows/pages.yml
+!assets/
+!assets/mooncake-moonlight.webp
+!assets/moonlit-watercolor.webp
+!assets/mooncakes/
+!assets/mooncakes/*.webp
+!assets/rabbits/
+!assets/rabbits/*-cutout.webp
