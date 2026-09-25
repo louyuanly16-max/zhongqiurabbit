@@ -162,6 +162,7 @@ body:has(#checkin-screen.active) .floating-rabbit{display:none}
 .audio-toggle{white-space:nowrap;min-height:32px}.audio-toggle:focus-visible{outline:2px solid #9681ae;outline-offset:4px;border-radius:4px}
 .music-notice{position:fixed;z-index:40;top:66px;right:clamp(16px,5vw,76px);max-width:280px;margin:0;padding:10px 14px;border:1px solid #e4dbe9;border-radius:12px;background:#fffaf6;color:#73617f;font-size:12px;line-height:1.6;box-shadow:0 6px 24px #77608818}
 @media(max-width:360px){.topbar{padding-left:14px;padding-right:14px}.top-actions{gap:7px}.brand{gap:6px}.brand small{font-size:8px}.audio-toggle,.reset-btn{font-size:10px}}
+.music-prompt{position:fixed;z-index:50;inset:0;display:grid;place-items:center;padding:20px;background:rgba(56,72,82,.3);backdrop-filter:blur(6px);animation:musicPromptIn .28s ease both}.music-prompt[hidden]{display:none}.music-prompt-card{position:relative;width:min(390px,100%);padding:31px 25px 25px;border:1px solid rgba(255,255,255,.9);border-radius:28px;background:linear-gradient(145deg,#fffdf5,#fff6e8);box-shadow:0 22px 70px rgba(60,68,78,.25);text-align:center;animation:modalIn .42s cubic-bezier(.16,1.25,.45,1) both}.music-prompt-close{position:absolute;top:12px;right:14px;display:grid;width:29px;height:29px;place-items:center;border:0;border-radius:50%;background:#e9f0ed;color:#75878a;font-size:19px;cursor:pointer}.music-prompt-badge{display:grid;width:58px;height:58px;margin:0 auto 13px;place-items:center;border:1px solid rgba(212,165,93,.55);border-radius:50%;background:#fff3c6;color:#c38c51;font-size:25px;box-shadow:0 0 0 8px rgba(255,243,198,.5);animation:musicBob 2.4s ease-in-out infinite}.music-prompt-kicker{margin:0 0 8px;color:#bb8c5b;font-size:10px;font-weight:800;letter-spacing:.16em}.music-prompt-card h2{margin:0 0 11px;color:#4b5660;font-size:22px;line-height:1.35}.music-prompt-card p:not(.music-prompt-kicker){margin:0 auto 20px;color:#7e8b8d;font-size:13px;line-height:1.8}.music-prompt-play{min-width:174px}.music-prompt-later{display:block;margin:13px auto 0;border:0;border-bottom:1px solid rgba(126,148,151,.35);padding:3px 0;background:transparent;color:#8a999b;font-size:11px;cursor:pointer}@keyframes musicPromptIn{from{opacity:0}to{opacity:1}}@keyframes musicBob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-4px) rotate(4deg)}}
 </style>
 </head>
 <body>
@@ -170,6 +171,17 @@ body:has(#checkin-screen.active) .floating-rabbit{display:none}
 <!-- One persistent player keeps the song playing across the three game screens. -->
 <audio id="background-music" src="https://music.163.com/song/media/outer/url?id=1348840978.mp3" preload="auto" autoplay loop playsinline></audio>
 <p class="music-notice" id="music-notice" role="status" hidden></p>
+<div class="music-prompt" id="music-prompt" role="dialog" aria-modal="true" aria-labelledby="music-prompt-title" hidden>
+  <div class="music-prompt-card">
+    <button class="music-prompt-close" id="music-prompt-close" type="button" aria-label="稍后播放音乐">×</button>
+    <div class="music-prompt-badge" aria-hidden="true">♫</div>
+    <p class="music-prompt-kicker">MOON RABBIT REMINDER</p>
+    <h2 id="music-prompt-title">点一下，让《桃花笑》陪你赏月</h2>
+    <p>月兔已经把音乐准备好啦～<br>轻轻点一下，今晚的中秋氛围就到位了。</p>
+    <button class="primary-btn music-prompt-play" id="music-prompt-play" type="button">♫ 播放桃花笑</button>
+    <button class="music-prompt-later" id="music-prompt-later" type="button">先静静看月亮</button>
+  </div>
+</div>
 <main>
 <section class="screen" id="rabbit-screen" aria-labelledby="rabbit-title"><div class="shell"><div class="hero"><p class="eyebrow">FIRST STEP · PICK YOUR MOON RABBIT</p><h1 id="rabbit-title">中秋节请选择你的玉兔</h1><p class="hero-copy">挑一只属于你的月夜搭子，给它一个名字。它会陪你走完这场甜甜的中秋小奇遇。</p></div><div class="selection-stage"><div class="rabbit-showcase"><button class="rabbit-arrow" id="rabbit-prev" type="button" aria-label="上一只玉兔">‹</button><div class="rabbit-grid" id="rabbit-grid"></div><button class="rabbit-arrow" id="rabbit-next" type="button" aria-label="下一只玉兔">›</button></div><div class="rabbit-pages" id="rabbit-pages" aria-label="切换玉兔"></div><div class="name-row"><div class="field"><label for="rabbit-name">给它取个名字（可爱一点更好）</label><input id="rabbit-name" maxlength="8" placeholder="例如：小桂花" autocomplete="off"></div><button class="primary-btn" id="start-btn" type="button" disabled>确认开启中秋奇遇</button></div><p class="helper">选好颜色并输入名字后，就可以出发啦 · 你的选择会被记住</p></div></div></section>
 <section class="screen" id="cake-screen" aria-labelledby="cake-title"><div class="shell"><div class="page-heading"><div><p class="eyebrow">SECOND STEP · ONE OF SIX</p><h2 id="cake-title">选一块今晚的月饼</h2></div><p>口味没有标准答案，选到哪一块，就会打开哪一种中秋拍照边框。</p></div><div class="cake-grid" id="cake-grid"></div></div></section>
@@ -267,12 +279,16 @@ let cameraStream=null,cameraFacing='environment',activeFilter='soft',captionColo
 // Click effects have their own Web Audio gain and are independent of music pause.
 let audioContext=null,audioMaster=null;
 const backgroundMusic=$('background-music');
+const musicPrompt=$('music-prompt');
 backgroundMusic.volume=.24;
 let musicWanted=false,musicAutoAttempted=false,musicRequest=0;
+function hideMusicPrompt(){musicPrompt.hidden=true}
+function showMusicPrompt(){musicPrompt.hidden=false}
 function ensureAudio(){if(!audioContext){const AudioCtx=window.AudioContext||window.webkitAudioContext;if(!AudioCtx)return false;audioContext=new AudioCtx();audioMaster=audioContext.createGain();audioMaster.gain.value=.14;audioMaster.connect(audioContext.destination)}if(audioContext.state==='suspended')audioContext.resume().catch(()=>{});return true}
 function playCuteSfx(kind='click'){if(!ensureAudio())return;const now=audioContext.currentTime,osc=audioContext.createOscillator(),gain=audioContext.createGain();osc.type=kind==='select'?'sine':'triangle';osc.frequency.setValueAtTime(kind==='select'?660:880,now);osc.frequency.exponentialRampToValueAtTime(kind==='select'?990:1320,now+.12);gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(kind==='select'?.075:.045,now+.015);gain.gain.exponentialRampToValueAtTime(.0001,now+.24);osc.connect(gain);gain.connect(audioMaster);osc.onended=()=>{osc.disconnect();gain.disconnect()};osc.start(now);osc.stop(now+.25)}
 function setMusicUI(status){
   const toggle=$('audio-toggle'),playing=status==='playing';
+  if(playing)hideMusicPrompt();
   toggle.classList.toggle('playing',playing);
   toggle.setAttribute('aria-pressed',String(playing));
   toggle.setAttribute('aria-busy',String(status==='loading'));
@@ -286,11 +302,13 @@ function musicFailed(message){
   backgroundMusic.pause();
   setMusicUI('error');
   $('music-notice').textContent=message;
-  $('music-notice').hidden=false;
+  $('music-notice').hidden=true;
+  showMusicPrompt();
 }
 async function startMusic(){
   const request=++musicRequest;
   musicWanted=true;
+  hideMusicPrompt();
   $('music-notice').hidden=true;
   setMusicUI('loading');
   if(backgroundMusic.error)backgroundMusic.load();
@@ -319,7 +337,10 @@ backgroundMusic.addEventListener('pause',()=>{
   if(backgroundMusic.paused)setMusicUI($('music-notice').hidden?'paused':'error');
 });
 backgroundMusic.addEventListener('waiting',()=>{if(musicWanted)setMusicUI('loading')});
-backgroundMusic.addEventListener('error',()=>{if(musicWanted)musicFailed('《桃花笑》暂时未能加载，点音乐按钮重试一下吧～')});
+backgroundMusic.addEventListener('error',()=>{
+  // An old failed load can report after a newer retry has already buffered the song.
+  if(musicWanted&&!(backgroundMusic.readyState>=3&&Number.isFinite(backgroundMusic.duration)))musicFailed('《桃花笑》暂时未能加载，点音乐按钮重试一下吧～');
+});
 // Pause in the background; resume only if the listener had left music enabled.
 function suspendMusic(){musicRequest+=1;backgroundMusic.pause()}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)suspendMusic();else if(musicWanted)startMusic()});
@@ -372,7 +393,7 @@ function capturePhoto(){if(!cameraStream)return;const video=$('camera-video'),ca
 // A click (including a keyboard-activated button) unlocks playback on mobile.
 // Automatic playback is attempted on entry; a blocked attempt can retry on the first gesture.
 document.addEventListener('click',event=>{
-  if(!(event.target instanceof Element)||event.target.closest('#audio-toggle'))return;
+  if(!(event.target instanceof Element)||event.target.closest('#audio-toggle, #music-prompt'))return;
   const button=event.target.closest('button');
   if(button?.disabled)return;
   if(!musicAutoAttempted){musicAutoAttempted=true;startMusic()}
@@ -382,6 +403,9 @@ $('audio-toggle').addEventListener('click',()=>{
   musicAutoAttempted=true;
   if(musicWanted)stopMusic();else startMusic();
 });
+$('music-prompt-play').addEventListener('click',()=>{musicAutoAttempted=true;startMusic();playCuteSfx('select')});
+$('music-prompt-close').addEventListener('click',hideMusicPrompt);
+$('music-prompt-later').addEventListener('click',hideMusicPrompt);
 renderRabbits();renderCakes();$('rabbit-prev').addEventListener('click',()=>showRabbit(currentRabbit-1));$('rabbit-next').addEventListener('click',()=>showRabbit(currentRabbit+1));$('rabbit-pages').addEventListener('click',e=>{const page=e.target.closest('[data-index]');if(page)showRabbit(Number(page.dataset.index))});document.querySelectorAll('.rabbit-card').forEach(c=>c.addEventListener('click',()=>{document.querySelectorAll('.rabbit-card').forEach(x=>x.classList.remove('selected'));c.classList.add('selected');state.profile={rabbitId:c.dataset.rabbit};updateStart()}));$('rabbit-name').addEventListener('input',updateStart);$('start-btn').addEventListener('click',startJourney);$('cake-grid').addEventListener('click',e=>{const c=e.target.closest('[data-cake]');if(c)chooseCake(cakes.find(x=>x.id===c.dataset.cake))});$('floating-rabbit').addEventListener('click',()=>{document.querySelectorAll('.modal-layer.open').forEach(l=>closeModal(l.id));showScreen('cake')});$('camera-rabbit').addEventListener('click',()=>showScreen('cake'));$('back-cakes').addEventListener('click',()=>showScreen('cake'));$('go-checkin').addEventListener('click',goCheckin);$('vacation-dream-btn').addEventListener('click',()=>{closeModal('vacation-modal');showResult(state.selectedCake)});$('capture-btn').addEventListener('click',capturePhoto);$('switch-camera').addEventListener('click',()=>{cameraFacing=cameraFacing==='environment'?'user':'environment';startCamera()});$('filter-row').addEventListener('click',event=>{const button=event.target.closest('[data-filter]');if(button)setFilter(button.dataset.filter)});$('sticker-palette').addEventListener('click',event=>{const button=event.target.closest('[data-sticker]');if(button)addSticker(button.dataset.sticker)});$('caption-colors').addEventListener('click',event=>{const button=event.target.closest('[data-color]');if(button){captionColor=button.dataset.color;document.querySelectorAll('[data-color]').forEach(dot=>dot.classList.toggle('active',dot===button))}});document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.close;closeModal(`${id}-modal`);if(id==='blessing')showScreen('cake')}));document.querySelectorAll('.modal-layer').forEach(l=>l.addEventListener('click',e=>{if(e.target!==l)return;if(l.id==='blessing-modal'){closeModal(l.id);showScreen('cake')}else closeModal(l.id)}));$('reset-btn').addEventListener('click',()=>{localStorage.removeItem('midautumn-rabbit-profile');state.profile=null;state.selectedCake=null;state.pendingCake=null;stopCamera();$('floating-rabbit').classList.remove('show');$('rabbit-name').value='';document.querySelectorAll('.rabbit-card').forEach(x=>x.classList.remove('selected'));updateStart();showRabbit(0);showScreen('rabbit')});document.addEventListener('visibilitychange',()=>{if(document.hidden)stopCamera();else if($('checkin-screen').classList.contains('active'))startCamera()});window.addEventListener('beforeunload',stopCamera);
 let dragging=false;function setSlider(x){const r=$('slider-track').getBoundingClientRect(),max=r.width-40,n=Math.max(0,Math.min(max,x-r.left-20)),ratio=n/max;$('slider-thumb').style.left=`${n+3}px`;$('slider-progress').style.width=`${n+20}px`;if(ratio>=.96&&!$('slider-wrap').classList.contains('success'))sliderSuccess()}$('slider-thumb').addEventListener('pointerdown',e=>{dragging=true;$('slider-thumb').setPointerCapture(e.pointerId)});$('slider-thumb').addEventListener('pointermove',e=>{if(dragging)setSlider(e.clientX)});$('slider-thumb').addEventListener('pointerup',()=>dragging=false);$('slider-thumb').addEventListener('pointercancel',()=>dragging=false);document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-layer.open').forEach(l=>closeModal(l.id))});
 try{const s=JSON.parse(localStorage.getItem('midautumn-rabbit-profile'));if(s&&s.rabbitId&&s.name){state.profile=s;applyProfile();showScreen('cake')}else showScreen('rabbit')}catch{showScreen('rabbit')}
