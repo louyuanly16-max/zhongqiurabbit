@@ -167,7 +167,7 @@ body:has(#checkin-screen.active) .floating-rabbit{display:none}
 </head>
 <body>
 <div class="app" id="app"><div class="sky" aria-hidden="true"><div class="moon"></div><div class="cloud a"></div><div class="cloud b"></div><div class="stars"></div></div>
-<header class="topbar"><div class="brand"><span class="brand-mark">兔</span><div>中秋奇遇<small>MOONCAKE QUEST</small></div></div><div class="top-actions"><button class="audio-toggle" id="audio-toggle" type="button" aria-pressed="false" aria-label="播放背景音乐：邓壬鑫《桃花笑》" title="背景音乐：邓壬鑫《桃花笑》">♫ 播放桃花笑</button><button class="reset-btn" id="reset-btn" type="button">重新选择小兔</button></div></header>
+<header class="topbar"><div class="brand"><span class="brand-mark">兔</span><div>中秋奇遇<small>MOONCAKE QUEST</small></div></div><div class="top-actions"><button class="audio-toggle" id="audio-toggle" type="button" aria-pressed="false" aria-label="播放背景音乐：邓壬鑫《桃花笑》" title="背景音乐：邓壬鑫《桃花笑》">♫ 播放音乐</button><button class="reset-btn" id="reset-btn" type="button">重新选择小兔</button></div></header>
 <!-- One persistent player keeps the song playing across the three game screens. -->
 <audio id="background-music" src="https://music.163.com/song/media/outer/url?id=1348840978.mp3" preload="auto" autoplay loop playsinline></audio>
 <p class="music-notice" id="music-notice" role="status" hidden></p>
@@ -178,7 +178,7 @@ body:has(#checkin-screen.active) .floating-rabbit{display:none}
     <p class="music-prompt-kicker">MOON RABBIT REMINDER</p>
     <h2 id="music-prompt-title">点一下，让《桃花笑》陪你赏月</h2>
     <p>月兔已经把音乐准备好啦～<br>轻轻点一下，今晚的中秋氛围就到位了。</p>
-    <button class="primary-btn music-prompt-play" id="music-prompt-play" type="button">♫ 播放桃花笑</button>
+    <button class="primary-btn music-prompt-play" id="music-prompt-play" type="button">♫ 播放音乐</button>
     <button class="music-prompt-later" id="music-prompt-later" type="button">先静静看月亮</button>
   </div>
 </div>
@@ -270,7 +270,7 @@ body:has(#checkin-screen.active) .floating-rabbit{display:none}
 <div class="modal-layer" id="vacation-modal" role="dialog" aria-modal="true" aria-labelledby="vacation-title"><div class="modal-card result-card"><button class="modal-close" data-close="vacation" aria-label="关闭弹窗">×</button><p class="modal-kicker">A LITTLE HOLIDAY DREAM</p><h3 id="vacation-title">永远放假馅</h3><p>先按下按钮，做一个永远放假的美梦吧～</p><button class="primary-btn" id="vacation-dream-btn" type="button">一个永远放假</button></div></div><div class="modal-layer" id="verify-modal" role="dialog" aria-modal="true" aria-labelledby="verify-title"><div class="modal-card"><button class="modal-close" data-close="verify" aria-label="关闭验证弹窗">×</button><p class="modal-kicker">A TINY HUMAN CHECK</p><h3 id="verify-title">滑动验证</h3><p>向右滑动月亮，完成快速人机验证。</p><div class="slider-wrap" id="slider-wrap"><div class="slider-track" id="slider-track"><div class="slider-progress" id="slider-progress"></div><button class="slider-thumb" id="slider-thumb" type="button" aria-label="滑动解锁">☽</button><span class="slider-text" id="slider-text">向右滑动月亮</span></div><p class="slider-hint">滑到最右边完成验证</p></div></div></div>
 </div>
 <script>
-const rabbits=[{id:'white',name:'白色玉兔',en:'CLOUD WHITE',image:'assets/rabbits/white-cutout.webp'},{id:'yellow',name:'黄色玉兔',en:'MOON GOLD',image:'assets/rabbits/yellow-cutout.webp'},{id:'pink',name:'粉色玉兔',en:'PEACH PINK',image:'assets/rabbits/pink-cutout.webp'},{id:'blue',name:'蓝色玉兔',en:'DUSK BLUE',image:'assets/rabbits/blue-cutout.webp'},{id:'red',name:'红色玉兔',en:'MAPLE RED',image:'assets/rabbits/red-cutout.webp'},{id:'rainbow',name:'彩虹玉兔',en:'RAINBOW GLOW',image:'assets/rabbits/rainbow-cutout.webp'}];
+const rabbits=[{id:'white',name:'白色玉兔',en:'CLOUD WHITE',image:'assets/rabbits/white-cutout.webp'},{id:'yellow',name:'黄色玉兔',en:'MOON GOLD',image:'assets/rabbits/yellow-cutout.webp'},{id:'pink',name:'粉色玉兔',en:'PEACH PINK',image:'assets/rabbits/pink-cutout.webp'},{id:'blue',name:'蓝色玉兔',en:'DUSK BLUE',image:'assets/rabbits/blue-fixed-cutout.webp'},{id:'red',name:'棕色玉兔',en:'MAPLE BROWN',image:'assets/rabbits/red-cutout.webp'},{id:'rainbow',name:'黄紫玉兔',en:'GOLDEN LILAC',image:'assets/rabbits/rainbow-cutout.webp'}];
 const cakes=[{id:'bean',title:'豆沙馅月饼',sub:'经典甜党 · 软糯派',cls:'bean',result:'恭喜解锁【经典甜党】成就！已打败 50% 异想天开的小伙伴，成功进入下一关！',theme:''},{id:'meat',title:'鲜肉馅月饼',sub:'咸党本命 · 鲜香派',cls:'meat',result:'恭喜锁定【咸党本命】席位！已打败 50% 异想天开的小伙伴，成功进入下一奇遇！',theme:'theme-pink'},{id:'taro',title:'芋泥馅月饼',sub:'温柔紫 · 同好认证',cls:'taro',result:'太有品了！同好认证，芋泥脑袋狂喜～',theme:'theme-lilac'},{id:'overtime',title:'牛马不加班馅',sub:'打工人限定 · 休息一下',cls:'overtime',result:'别做梦啦！活是干不完的，但假期能过一秒是一秒，先好好赏月吃饼！总好过吃老板的大饼～',theme:'theme-mint'},{id:'vacation',title:'永远放假馅',sub:'摸鱼幻想 · 快乐加倍',cls:'vacation',result:'醒醒醒醒！哪有永远放假的快乐？大晚上是该做梦了！祝好梦～～',theme:'theme-pink'},{id:'knowledge',title:'知识入脑馅',sub:'卷王专属 · 学无止境',cls:'knowledge',result:'恭喜！你成功通过人机验证。鉴定完毕：你是人类，不是卷王。\n\n放假不好好休息，居然还来学习？',theme:'theme-mint',verify:true}];
 const blessings=['月圆人圆事事圆，中秋喜乐岁岁安','愿你中秋揽月，万事温柔顺遂','玉兔伴月，岁岁无忧，事事可期','中秋月色温柔，愿你日子闪闪发光','风月皆圆满，人间皆温柔','月光所照，皆是温柔，愿你岁岁平安','秋意漫山河，月圆伴心安','岁岁中秋，年年欢喜，事事圆满','借一轮明月，祝君岁岁长安宁','月色温柔，人间可爱，中秋快乐','星河漫漫，月圆人安','秋晚良辰，万事胜意','清风明月，岁岁相伴','愿你拥有一整轮温柔秋月的好运','中秋不负温柔，岁月不负有心人','月满，爱满，万事圆满','山河共明月，人间共良辰','今宵月色正好，未来岁岁可期','秋光正好，月圆无忧','烟火向星辰，月圆皆如愿','一枕清秋梦，千里共婵娟','岁岁年年，月圆人团圆','温柔秋月，治愈所有疲惫','皓月千里，福伴朝夕','中秋喜乐，所得皆所愿','清风揽明月，好运伴余生','月圆人安，岁岁欢愉','秋遇良辰，万事圆满','明月寄相思，岁岁皆安康','今日月圆，日日圆满'];
 const state={profile:null,selectedCake:null,pendingCake:null},$=id=>document.getElementById(id);
@@ -292,13 +292,12 @@ function setMusicUI(status){
   toggle.classList.toggle('playing',playing);
   toggle.setAttribute('aria-pressed',String(playing));
   toggle.setAttribute('aria-busy',String(status==='loading'));
-  toggle.textContent={playing:'♫ 暂停桃花笑',loading:'♫ 加载中…',error:'♫ 重试桃花笑',paused:'♫ 播放桃花笑'}[status];
+  toggle.textContent={playing:'♫ 暂停音乐',loading:'♫ 加载音乐…',error:'♫ 重试音乐',paused:'♫ 播放音乐'}[status];
   toggle.setAttribute('aria-label',status==='loading'?'取消加载背景音乐：桃花笑':`${playing?'暂停':'播放'}背景音乐：邓壬鑫《桃花笑》`);
 }
 function musicFailed(message){
   musicRequest+=1;
   musicWanted=false;
-  musicAutoAttempted=false;
   backgroundMusic.pause();
   setMusicUI('error');
   $('music-notice').textContent=message;
@@ -390,8 +389,8 @@ function paintStickers(ctx,frameRect,width,height){document.querySelectorAll('.s
 function paintRabbit(ctx,width,height,done){const image=$('checkin-rabbit'),finish=()=>{const ratio=(image.naturalWidth||1)/(image.naturalHeight||1),rh=Math.min(height*.28,190),rw=rh*ratio;ctx.save();ctx.globalAlpha=.98;ctx.drawImage(image,width-rw-24,height-rh-20,rw,rh);ctx.restore();paintCaption(ctx,width,height);done()};if(image.complete&&image.naturalWidth)finish();else image.addEventListener('load',finish,{once:true})}
 function paintCaption(ctx,width,height){const text=$('photo-caption').value.trim();if(!text)return;ctx.save();ctx.font=`700 ${Math.max(18,width*.026)}px "PingFang SC","Microsoft YaHei",sans-serif`;ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillStyle=captionColor;ctx.shadowColor='rgba(30,22,19,.55)';ctx.shadowBlur=5;ctx.fillText(text,width/2,height-28);ctx.restore()}
 function capturePhoto(){if(!cameraStream)return;const video=$('camera-video'),canvas=$('capture-canvas'),frame=$('camera-frame'),width=video.videoWidth||1280,height=video.videoHeight||960;canvas.width=width;canvas.height=height;const ctx=canvas.getContext('2d');drawCoverVideo(ctx,video,width,height);const filterColors={soft:'rgba(255,237,194,.12)',cool:'rgba(167,203,232,.13)',warm:'rgba(247,192,123,.16)'};ctx.fillStyle=filterColors[activeFilter];ctx.fillRect(0,0,width,height);paintFrame(ctx,width,height);paintStickers(ctx,frame.getBoundingClientRect(),width,height);paintRabbit(ctx,width,height,()=>{$('captured-photo').src=canvas.toDataURL('image/png');$('capture-result').hidden=false})}
-// A click (including a keyboard-activated button) unlocks playback on mobile.
-// Automatic playback is attempted on entry; a blocked attempt can retry on the first gesture.
+// Game clicks keep their cute effects. Retry blocked music with the music controls,
+// so choosing a quiet visit does not restart playback when selecting a rabbit.
 document.addEventListener('click',event=>{
   if(!(event.target instanceof Element)||event.target.closest('#audio-toggle, #music-prompt'))return;
   const button=event.target.closest('button');
@@ -409,8 +408,8 @@ $('music-prompt-later').addEventListener('click',hideMusicPrompt);
 renderRabbits();renderCakes();$('rabbit-prev').addEventListener('click',()=>showRabbit(currentRabbit-1));$('rabbit-next').addEventListener('click',()=>showRabbit(currentRabbit+1));$('rabbit-pages').addEventListener('click',e=>{const page=e.target.closest('[data-index]');if(page)showRabbit(Number(page.dataset.index))});document.querySelectorAll('.rabbit-card').forEach(c=>c.addEventListener('click',()=>{document.querySelectorAll('.rabbit-card').forEach(x=>x.classList.remove('selected'));c.classList.add('selected');state.profile={rabbitId:c.dataset.rabbit};updateStart()}));$('rabbit-name').addEventListener('input',updateStart);$('start-btn').addEventListener('click',startJourney);$('cake-grid').addEventListener('click',e=>{const c=e.target.closest('[data-cake]');if(c)chooseCake(cakes.find(x=>x.id===c.dataset.cake))});$('floating-rabbit').addEventListener('click',()=>{document.querySelectorAll('.modal-layer.open').forEach(l=>closeModal(l.id));showScreen('cake')});$('camera-rabbit').addEventListener('click',()=>showScreen('cake'));$('back-cakes').addEventListener('click',()=>showScreen('cake'));$('go-checkin').addEventListener('click',goCheckin);$('vacation-dream-btn').addEventListener('click',()=>{closeModal('vacation-modal');showResult(state.selectedCake)});$('capture-btn').addEventListener('click',capturePhoto);$('switch-camera').addEventListener('click',()=>{cameraFacing=cameraFacing==='environment'?'user':'environment';startCamera()});$('filter-row').addEventListener('click',event=>{const button=event.target.closest('[data-filter]');if(button)setFilter(button.dataset.filter)});$('sticker-palette').addEventListener('click',event=>{const button=event.target.closest('[data-sticker]');if(button)addSticker(button.dataset.sticker)});$('caption-colors').addEventListener('click',event=>{const button=event.target.closest('[data-color]');if(button){captionColor=button.dataset.color;document.querySelectorAll('[data-color]').forEach(dot=>dot.classList.toggle('active',dot===button))}});document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.close;closeModal(`${id}-modal`);if(id==='blessing')showScreen('cake')}));document.querySelectorAll('.modal-layer').forEach(l=>l.addEventListener('click',e=>{if(e.target!==l)return;if(l.id==='blessing-modal'){closeModal(l.id);showScreen('cake')}else closeModal(l.id)}));$('reset-btn').addEventListener('click',()=>{localStorage.removeItem('midautumn-rabbit-profile');state.profile=null;state.selectedCake=null;state.pendingCake=null;stopCamera();$('floating-rabbit').classList.remove('show');$('rabbit-name').value='';document.querySelectorAll('.rabbit-card').forEach(x=>x.classList.remove('selected'));updateStart();showRabbit(0);showScreen('rabbit')});document.addEventListener('visibilitychange',()=>{if(document.hidden)stopCamera();else if($('checkin-screen').classList.contains('active'))startCamera()});window.addEventListener('beforeunload',stopCamera);
 let dragging=false;function setSlider(x){const r=$('slider-track').getBoundingClientRect(),max=r.width-40,n=Math.max(0,Math.min(max,x-r.left-20)),ratio=n/max;$('slider-thumb').style.left=`${n+3}px`;$('slider-progress').style.width=`${n+20}px`;if(ratio>=.96&&!$('slider-wrap').classList.contains('success'))sliderSuccess()}$('slider-thumb').addEventListener('pointerdown',e=>{dragging=true;$('slider-thumb').setPointerCapture(e.pointerId)});$('slider-thumb').addEventListener('pointermove',e=>{if(dragging)setSlider(e.clientX)});$('slider-thumb').addEventListener('pointerup',()=>dragging=false);$('slider-thumb').addEventListener('pointercancel',()=>dragging=false);document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-layer.open').forEach(l=>closeModal(l.id))});
 try{const s=JSON.parse(localStorage.getItem('midautumn-rabbit-profile'));if(s&&s.rabbitId&&s.name){state.profile=s;applyProfile();showScreen('cake')}else showScreen('rabbit')}catch{showScreen('rabbit')}
-// Start as soon as the page is ready. Browsers that block audible autoplay keep the
-// music button available for the first user gesture.
+// Start as soon as the page is ready. If audible autoplay is blocked, the reminder
+// and music button let the visitor explicitly start playback.
 musicAutoAttempted=true;
 startMusic();
 </script>
